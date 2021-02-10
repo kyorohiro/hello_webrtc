@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>Hello</title>
+    </head>
+    <body>
+        Hello!! Page
+        <script>
+            const socket = new WebSocket('wss://118.27.105.203:18443/wss')
+            socket.addEventListener('open', function(){
+                socket.send("Hello Server!!")
+            })
+            socket.addEventListener("message", function(event){
+                console.log('Message from server ', event.data);
+                console.log(event)
+            })
+        </script>
+
+    </body>
+</html>
