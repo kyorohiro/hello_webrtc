@@ -38,7 +38,8 @@ wss_secure.on('connection', function connection(ws_socket) {
   ws_socket.on('message', function incoming(data) {
     console.log("on message --")
     console.log(data)
-    // ほかの接続へブロードキャスト
+    //
+    //
     wss_secure.clients.forEach(function each(client) {
       //if (client !== ws_socket && client.readyState === WebSocket.OPEN) {
       client.send("Hello!! " + ws_sockets.length);
@@ -46,7 +47,7 @@ wss_secure.on('connection', function connection(ws_socket) {
     });
   });
   ws_socket.on("close", function() {
-    ws_socket.de
+    ws_socket.close()
     ws_sockets =  ws_sockets.filter(item => item !== ws_socket)
   }); 
 });

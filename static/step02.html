@@ -1,0 +1,155 @@
+<html>
+
+<head>
+    <style>
+        video {
+            border: 1px solid;
+            border-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <video id="localVideo" autoplay playshinline></video>
+        <video id="remoteVideo" autoplay playshinline></video><br>
+    </div>
+
+    <div>
+        <button id="startButton">START</button>
+        <button id="offerButton">Offer</button>
+        <button id="answerButton">Answer</button>
+        <button id="setRemoteSDPButton">SET_REMOTE_SDP</button>
+        <button id="hangupButton">HANG UP</button>
+    </div>
+    <div>
+        <label>Offer Content(local sdp)</label><br>
+        <textarea id="offerContent" style="width: 95%;"></textarea><button id="copyButton">Copy SDP</button><br><br>
+        <label>Offered Content(remote sdp)</label><br>
+        <textarea id="offeredContent" style="width: 95%;"></textarea>
+    </div>
+
+    <script>
+        //
+        // button
+        const startButton = document.getElementById("startButton")
+        const offerButton = document.getElementById("offerButton")
+        const answerButton = document.getElementById("answerButton")
+        const hangupButton = document.getElementById("hangupButton")
+        const setRemoteSDPButton = document.getElementById("setRemoteSDPButton")
+        const copyButton = document.getElementById("copyButton")
+
+
+        const offerTextarea = document.getElementById("offerContent")
+        const offeredTextarea = document.getElementById("offeredContent")
+
+        //
+        // property
+        let localStream;
+        let localPeerConnection;
+
+        copyButton.addEventListener("click", function(){
+            offerTextarea.select();
+            document.execCommand('copy');
+        })
+        startButton.addEventListener("click", function (e) {
+            // setup camera
+            console.log("on click start button")
+            const localVideo = document.querySelector("video")
+
+            navigator.mediaDevices.getUserMedia({
+                video: true
+            }).then(
+                (mediaStream) => {
+                    localStream = mediaStream
+                    localVideo.srcObject = mediaStream
+
+                    //
+                    // connect
+                    const videoTracks = localStream.getVideoTracks();
+                    const audioTracks = localStream.getAudioTracks();
+                    //
+                    const configuration = null
+                    localPeerConnection = new RTCPeerConnection(configuration)
+
+                    //
+                    localPeerConnection.addEventListener("icecandidate", function (context, ev) {
+                        // (this: RTCPeerConnection, ev: RTCPeerConnectionIceEvent) => any
+                        console.log("on ice candidate");
+                        console.log(context)
+                        console.log(ev)
+                    })
+
+                    //
+                    localPeerConnection.addEventListener("iceconnectionstatechange", function (context, ev) {
+                        // : (this: RTCPeerConnection, ev: Event) => any, 
+                        console.log("on ice connecton state change");
+                        console.log(context)
+                        console.log(ev)
+                    })
+
+                    localPeerConnection.addStream(localStream)
+                }).catch((error) => {
+                    console.log("navigator.getUserMedia error: ", error)
+                })
+
+        });
+        offerButton.addEventListener("click", function (e) {
+            console.log("on click call button")
+
+            localPeerConnection.createOffer({
+                offerToReceiveVideo: 1,
+            }
+            ).then((description) => {
+                console.log("on created offer")
+                console.log(description)
+                offerTextarea.value =  JSON.stringify(description)
+                localPeerConnection.setLocalDescription(description)
+            }).catch((error) => {
+                console.log("navigator.getUserMedia error: ", error)
+            });
+        });
+
+        answerButton.addEventListener("click", function (e) {
+            console.log("on click call button")
+            localPeerConnection.createAnswer().then((description) => {
+                console.log("on created offer")
+                console.log(description)
+                offerTextarea.value =  JSON.stringify(description)
+                localPeerConnection.setLocalDescription(description)
+            }).catch((error) => {
+                console.log("navigator.getUserMedia error: ", error)
+            });
+        });
+
+        setRemoteSDPButton.addEventListener("click", function (e) {
+            console.log("on set remote sdp button")
+            localPeerConnection.setRemoteDescription(JSON.parse(offeredTextarea.value))
+        })
+
+        hangupButton.addEventListener("click", function (e) {
+            console.log("on click hangup button")
+            localVideo.srcObject = null
+            localStream.getTracks().forEach(function (track) {
+                track.stop();
+            });
+        });
+
+
+
+        function createOffer(description) {
+            console.log(`Offer from localPeerConnection:\n${description.sdp}`)
+            console.log('localPeerConnection setLocalDescription start.')
+
+            localPeerConnection.setLocalDescription(description).then(() => {
+
+            })
+
+        }
+
+        //
+        //
+    </script>
+</body>
+
+</html>
