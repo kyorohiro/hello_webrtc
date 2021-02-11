@@ -3,7 +3,8 @@
         <title>Hello</title>
     </head>
     <body>
-        Hello!! Page
+        Hello!! Page<br>
+        <button id="onStartButton">Start</button>
         <script>
             const socket = new WebSocket('wss://118.27.105.203:18443/wss')
             socket.addEventListener('open', function(){
@@ -14,6 +15,15 @@
                 console.log(event)
             })
         </script>
+        <script>
+            var conn = null;
+            document.getElementById("onStartButton").addEventListener("click",function(e){
+                console.log("clicked start button")
+                conn = new RTCPeerConnection();
+                conn.onad
+            })
+        </script>
+
 
     </body>
 </html>

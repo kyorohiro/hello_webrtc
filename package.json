@@ -11,7 +11,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "http-server . -c-1 -S --cert cert.pem --key key.pem"
+    "serve": "node main_server.js"
   },
   "author": "",
   "license": "ISC"
