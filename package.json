@@ -6,6 +6,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "http-server": "^0.12.3",
+    "uuid": "^8.3.2",
     "ws": "^7.4.3"
   },
   "devDependencies": {},

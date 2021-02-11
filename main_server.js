@@ -1,6 +1,7 @@
 var WebSocket = require('ws')
 var express = require('express')
 var https = require("https")
+var uuid = require('uuid');
 
 //
 var fs = require('fs');
@@ -18,8 +19,12 @@ app.get('/', function(req,res){
 })
 */
 app.use('/', express.static('static'))
+app.get('/api/create_annonymous_id', function(req,res){
+  // curl https://0.0.0.0:18443/api/create_annonymous_id --insecure
+  res.send(uuid.v1())
+})
 //
-//app.listen(port)
+//app.listen(port)c
 
 var server_secure = https.createServer({
   key: fs.readFileSync(ssl_server_key),
