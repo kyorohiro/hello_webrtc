@@ -69,7 +69,10 @@
                     const videoTracks = localStream.getVideoTracks();
                     const audioTracks = localStream.getAudioTracks();
                     //
-                    const configuration = null
+                    //const configuration = null
+                    //const configuration = {iceServers: [{urls: 'stuns:stun.example.org'}]};
+                    const configuration = {iceServers: [{urls: 'stuns:stun.l.google.com:19302'}]};
+                    
                     localPeerConnection = new RTCPeerConnection(configuration)
 
                     //
